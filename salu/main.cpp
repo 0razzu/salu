@@ -1,3 +1,8 @@
+#include "globals.hpp"
+#include "stack.hpp"
+#include "stack.cpp"
+#include "dictionary.hpp"
+#include "dictionary.cpp"
 #include <iostream>
 #include <fstream>
 
