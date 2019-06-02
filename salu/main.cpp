@@ -6,11 +6,11 @@ int main(int argc, const char * argv[]) {
     std::ifstream fin;
     char file_path[1024] = "";
     
-    if ((argc < 2) || (argc > 3))
+    if (argc > 2)
         std::cerr << "Некорректное число входных аргументов" << std::endl;
     
     else {
-        if (argc == 2) {
+        if (argc == 1) {
             while (file_path[0] == '\0') {
                 std::cout << "Введите путь к файлу с кодом для САЛУ" << std::endl;
                 rewind(stdin);
