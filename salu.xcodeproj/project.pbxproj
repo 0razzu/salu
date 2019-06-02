@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		333C30BC22A44E9F00B7C35B /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 333C30BB22A44E9F00B7C35B /* main.cpp */; };
+		333FAAE122A4526C0057E1A1 /* stack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 333FAADD22A4526C0057E1A1 /* stack.cpp */; };
+		333FAAE222A4526C0057E1A1 /* dictionary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 333FAADE22A4526C0057E1A1 /* dictionary.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +27,11 @@
 /* Begin PBXFileReference section */
 		333C30B822A44E9F00B7C35B /* salu */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = salu; sourceTree = BUILT_PRODUCTS_DIR; };
 		333C30BB22A44E9F00B7C35B /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		333FAADC22A4526B0057E1A1 /* stack.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = stack.hpp; sourceTree = "<group>"; };
+		333FAADD22A4526C0057E1A1 /* stack.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = stack.cpp; sourceTree = "<group>"; };
+		333FAADE22A4526C0057E1A1 /* dictionary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dictionary.cpp; sourceTree = "<group>"; };
+		333FAADF22A4526C0057E1A1 /* dictionary.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = dictionary.hpp; sourceTree = "<group>"; };
+		333FAAE022A4526C0057E1A1 /* globals.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = globals.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +65,11 @@
 			isa = PBXGroup;
 			children = (
 				333C30BB22A44E9F00B7C35B /* main.cpp */,
+				333FAAE022A4526C0057E1A1 /* globals.hpp */,
+				333FAADC22A4526B0057E1A1 /* stack.hpp */,
+				333FAADD22A4526C0057E1A1 /* stack.cpp */,
+				333FAADF22A4526C0057E1A1 /* dictionary.hpp */,
+				333FAADE22A4526C0057E1A1 /* dictionary.cpp */,
 			);
 			path = salu;
 			sourceTree = "<group>";
@@ -118,6 +130,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				333FAAE122A4526C0057E1A1 /* stack.cpp in Sources */,
+				333FAAE222A4526C0057E1A1 /* dictionary.cpp in Sources */,
 				333C30BC22A44E9F00B7C35B /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
