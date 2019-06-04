@@ -15,5 +15,12 @@ const ushort StackBlockSize = 8;
 const uint8_t NO_ELEM = 0x4, ALREADY_EXISTS = 0x8;
 const ushort DictionaryKeySize = 16;
 
+// filter_stream
+const uint8_t NO_FILE = 0x4, READ_ERR = 0x8, END = 0x10;
+const ushort PIECE_SIZE = 25;
+
+// salu
+const uint8_t WORKING = 0x2, UNEXPECTED = 0x4, INCOMPATIBLE = 0x8;
+
 
 #endif

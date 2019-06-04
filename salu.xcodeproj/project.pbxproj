@@ -10,6 +10,7 @@
 		333C30BC22A44E9F00B7C35B /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 333C30BB22A44E9F00B7C35B /* main.cpp */; };
 		333FAAE122A4526C0057E1A1 /* stack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 333FAADD22A4526C0057E1A1 /* stack.cpp */; };
 		333FAAE222A4526C0057E1A1 /* dictionary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 333FAADE22A4526C0057E1A1 /* dictionary.cpp */; };
+		333FAAFC22A6EA590057E1A1 /* filter_stream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 333FAAFB22A6EA590057E1A1 /* filter_stream.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -32,6 +33,8 @@
 		333FAADE22A4526C0057E1A1 /* dictionary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dictionary.cpp; sourceTree = "<group>"; };
 		333FAADF22A4526C0057E1A1 /* dictionary.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = dictionary.hpp; sourceTree = "<group>"; };
 		333FAAE022A4526C0057E1A1 /* globals.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = globals.hpp; sourceTree = "<group>"; };
+		333FAAFA22A6EA590057E1A1 /* filter_stream.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = filter_stream.hpp; sourceTree = "<group>"; };
+		333FAAFB22A6EA590057E1A1 /* filter_stream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = filter_stream.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,6 +73,8 @@
 				333FAADD22A4526C0057E1A1 /* stack.cpp */,
 				333FAADF22A4526C0057E1A1 /* dictionary.hpp */,
 				333FAADE22A4526C0057E1A1 /* dictionary.cpp */,
+				333FAAFA22A6EA590057E1A1 /* filter_stream.hpp */,
+				333FAAFB22A6EA590057E1A1 /* filter_stream.cpp */,
 			);
 			path = salu;
 			sourceTree = "<group>";
@@ -133,6 +138,7 @@
 				333FAAE122A4526C0057E1A1 /* stack.cpp in Sources */,
 				333FAAE222A4526C0057E1A1 /* dictionary.cpp in Sources */,
 				333C30BC22A44E9F00B7C35B /* main.cpp in Sources */,
+				333FAAFC22A6EA590057E1A1 /* filter_stream.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
