@@ -107,7 +107,7 @@ void FilterStream::getline(char line[], ushort k, char terminator) {
         do {
             c = peek();
             
-            if (c != terminator) {
+            if ((c != terminator) && (!isRead())) {
                 c = get();
                 line[i] = c;
                 i++;
@@ -129,6 +129,6 @@ bool FilterStream::isOK() {
 }
 
 
-uint8_t FilterStream::error() {
+uint8_t FilterStream::getState() {
     return state;
 }

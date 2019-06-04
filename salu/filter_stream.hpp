@@ -29,7 +29,7 @@ public:
     
     bool isRead();
     bool isOK();
-    uint8_t error();
+    uint8_t getState();
 };
 
 

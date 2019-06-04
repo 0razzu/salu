@@ -1,7 +1,7 @@
 #include "globals.hpp"
 #include "stack.cpp"
 #include "dictionary.cpp"
-#include "filter_stream.cpp"
+#include "filter_stream.hpp"
 #include <iostream>
 #include <fstream>
 #include <cmath>
@@ -56,17 +56,17 @@ bool read_num(std::istream &in, u_long &curr, double &num) {
 }
 
 
-uint8_t salu(std::ifstream &in) {
+uint8_t salu(FilterStream &code) {
     uint8_t state = OK;
     Stack<double> r_operands;
     Stack<bool> b_operands, is_r;
     char c = '\0', next, command[4], wrong_symbol;
     u_long curr = 0, curr_line = 1;
     
-    while ((c != '{') && (c != EOF)) {
-        in.get(c);
+    while ((c != '{') && (c != EOF) && (code.isOK())) {
+        c = code.get();
         
-        if (c == '\n') {
+        if ((c == '\n') && (code.isOK())) {
             curr = 0;
             curr_line++;
         }
@@ -78,40 +78,33 @@ uint8_t salu(std::ifstream &in) {
     if (c == '{') {
         state |= WORKING;
     
-        next = in.peek();
+        next = code.peek();
         
-        while (state == WORKING) {
-            if ((next == ' ') || (next == '\t') || (next == '\n')) {
-                in.get(c);
+        while ((state == WORKING) && (code.isOK())) {
+            if (((next >= 'A') && (next <= 'Z')) || ((next >= 'a') && (next <= 'z'))) {
+                code.getline(command, 4, '\0');
                 
-                if (c == '\n') {
-                    curr = 0;
-                    curr_line++;
-                }
-                
-                else
-                    curr++;
-            }
-            
-            else if (((next >= 'A') && (next <= 'Z')) || ((next >= 'a') && (next <= 'z'))) {
-                in.getline(command, 4, ' ');
+                // обработка команд
             }
             
             else if (next == '}') {
-                in.get(c);
+                c = code.get();
                 state &= ~WORKING;
             }
             
-            next = in.peek();
+            next = code.peek();
         }
     }
+    
+    if (code.getState() & READ_ERR)
+        state |= READ_ERR;
     
     return state;
 }
 
 
 int main(int argc, const char * argv[]) {
-    std::ifstream fin;
+    FilterStream code;
     char file_path[1024] = "";
     
     if (argc > 2)
@@ -129,13 +122,10 @@ int main(int argc, const char * argv[]) {
         else
             strcat(file_path, argv[1]);
         
-        fin.open(file_path);
+        code.open(file_path);
         
-        if (fin.is_open()) {
-            salu(fin);
-            
-            fin.close();
-        }
+        if (code.isOK())
+            salu(code);
         
         else
             std::cerr << "Ошибка при открытии файла «" << file_path << "»" << std::endl;
