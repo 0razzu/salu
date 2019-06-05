@@ -10,7 +10,7 @@ template <typename DictionaryData>
 Dictionary<DictionaryData>::Dictionary() {
     first_block = NULL;
     last_block = NULL;
-    error_code = OK;
+    state = OK;
 }
 
 
@@ -31,16 +31,16 @@ template <typename DictionaryData>
 void Dictionary<DictionaryData>::add(const char key_i[DictionaryKeySize], DictionaryData value_i) {
     DictionaryBlock<DictionaryData> *temp = first_block;
     
-    error_code &= !(MEM_ERR | ALREADY_EXISTS);
+    state &= !(MEM_ERR | REDEFINITION);
     
-    while ((temp) && (!(error_code & ALREADY_EXISTS))) {
+    while ((temp) && (!(state & REDEFINITION))) {
         if (strcmp(temp->key, key_i) == 0)
-            error_code |= ALREADY_EXISTS;
+            state |= REDEFINITION;
         
         temp = temp->next;
     }
     
-    if (!(error_code & ALREADY_EXISTS)) {
+    if (!(state & REDEFINITION)) {
         temp = new(std::nothrow) DictionaryBlock<DictionaryData>;
             
         if (temp) {
@@ -61,7 +61,7 @@ void Dictionary<DictionaryData>::add(const char key_i[DictionaryKeySize], Dictio
         }
             
         else
-            error_code |= MEM_ERR;
+            state |= MEM_ERR;
     }
 }
 
@@ -73,10 +73,10 @@ DictionaryData Dictionary<DictionaryData>::getValue(const char key_i[DictionaryK
     bool found = 0;
     
     if (isEmpty())
-        error_code |= (EMPTY | NO_ELEM);
+        state |= (EMPTY | NO_ELEM);
     
     else {
-        error_code &= !NO_ELEM;
+        state &= !NO_ELEM;
         
         while ((temp) && (!found)) {
             if (strcmp(temp->key, key_i) == 0) {
@@ -88,7 +88,7 @@ DictionaryData Dictionary<DictionaryData>::getValue(const char key_i[DictionaryK
         }
         
         if (!found)
-            error_code |= NO_ELEM;
+            state |= NO_ELEM;
     }
     
     return value_r;
@@ -101,10 +101,10 @@ void Dictionary<DictionaryData>::del(const char key_i[DictionaryKeySize]) {
     bool found = 0;
     
     if (isEmpty())
-        error_code |= (EMPTY | NO_ELEM);
+        state |= (EMPTY | NO_ELEM);
     
     else {
-        error_code &= !NO_ELEM;
+        state &= !NO_ELEM;
         
         while ((temp) && (!found)) {
             if (strcmp(temp->key, key_i) == 0)
@@ -131,7 +131,7 @@ void Dictionary<DictionaryData>::del(const char key_i[DictionaryKeySize]) {
         }
         
         else
-            error_code |= NO_ELEM;
+            state |= NO_ELEM;
     }
 }
 
@@ -143,12 +143,12 @@ bool Dictionary<DictionaryData>::isEmpty() {
 
 
 template <typename DictionaryData>
-uint8_t Dictionary<DictionaryData>::error() {
-    uint8_t error_code_r = error_code;
+uint8_t Dictionary<DictionaryData>::getState() {
+    uint8_t state_r = state;
     
-    error_code = OK;
+    state = OK;
     
-    return error_code_r;
+    return state_r;
 }
 
 

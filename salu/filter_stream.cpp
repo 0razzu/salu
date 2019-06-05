@@ -5,6 +5,7 @@ FilterStream::FilterStream() {
     state = NO_FILE;
     piece[0] = '\0';
     place = PIECE_SIZE;
+    add_space = 0;
 }
 
 
@@ -29,12 +30,21 @@ void FilterStream::get_piece() {
         next = fin.peek();
         
         while ((i < PIECE_SIZE - 1) && (!fin.fail()) && (next != EOF)) {
-            if ((next == ' ') || (next == '\t') || (next == '\n'))
+            if ((next == ' ') || (next == '\t') || (next == '\n')) {
                 fin.get(c);
+                
+                if (add_space) {
+                    piece[i] = ' ';
+                    add_space = 0;
+                    i++;
+                }
+                    
+            }
             
             else {
                 fin.get(c);
                 piece[i] = next;
+                add_space = 1;
                 i++;
             }
             
@@ -60,6 +70,7 @@ void FilterStream::open(const char file_path[]) {
     
     if (fin.is_open()) {
         state = OK;
+        add_space = 0;
         get_piece();
     }
     

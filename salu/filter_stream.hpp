@@ -13,6 +13,7 @@ private:
     std::ifstream fin;
     char piece[PIECE_SIZE];
     ushort place;
+    bool add_space;
     
     void get_piece();
     

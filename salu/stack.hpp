@@ -17,7 +17,7 @@ template <typename StackBlockData>
 class Stack {
 private:
     StackBlock<StackBlockData> *prev, *top;
-    uint8_t error_code;
+    uint8_t state;
     unsigned long long k;
     
 
@@ -40,7 +40,7 @@ public:
     unsigned long long getK();
     bool isEmpty();
     
-    uint8_t error();
+    uint8_t getState();
 };
 
 

@@ -9,7 +9,7 @@ template <typename StackBlockData>
 Stack<StackBlockData>::Stack() {
     prev = nullptr;
     top = nullptr;
-    error_code = OK;
+    state = OK;
     k = 0;
 }
 
@@ -20,10 +20,10 @@ Stack<StackBlockData>::Stack(const Stack<StackBlockData> &Stack0) {
     ushort i;
     
     top = nullptr;
-    error_code = Stack0.error_code;
+    state = Stack0.state;
     k = Stack0.k;
     
-    if (!(error_code & MEM_ERR)) {
+    if (!(state & MEM_ERR)) {
         if (Stack0.prev)
             prev = new(std::nothrow) StackBlock<StackBlockData>;
         
@@ -46,10 +46,10 @@ Stack<StackBlockData>::Stack(const Stack<StackBlockData> &Stack0) {
                 }
                 
                 else
-                    error_code |= MEM_ERR;
+                    state |= MEM_ERR;
             }
             
-            while ((curr) && (!(error_code & MEM_ERR))) {
+            while ((curr) && (!(state & MEM_ERR))) {
                 temp = new(std::nothrow) StackBlock<StackBlockData>;
                 
                 if (temp) {
@@ -65,12 +65,12 @@ Stack<StackBlockData>::Stack(const Stack<StackBlockData> &Stack0) {
                 }
                 
                 else
-                    error_code |= MEM_ERR;
+                    state |= MEM_ERR;
             }
         }
         
         else
-            error_code |= MEM_ERR;
+            state |= MEM_ERR;
     }
 }
 
@@ -89,10 +89,10 @@ void Stack<StackBlockData>::operator =(const Stack<StackBlockData> &Stack0) {
     clear();
     
     top = nullptr;
-    error_code = Stack0.error_code;
+    state = Stack0.state;
     k = Stack0.k;
     
-    if (!(error_code & MEM_ERR)) {
+    if (!(state & MEM_ERR)) {
         if (Stack0.prev)
             prev = new(std::nothrow) StackBlock<StackBlockData>;
         
@@ -112,10 +112,10 @@ void Stack<StackBlockData>::operator =(const Stack<StackBlockData> &Stack0) {
                 }
                 
                 else
-                    error_code |= MEM_ERR;
+                    state |= MEM_ERR;
             }
             
-            while ((curr) && (!(error_code & MEM_ERR))) {
+            while ((curr) && (!(state & MEM_ERR))) {
                 temp = new(std::nothrow) StackBlock<StackBlockData>;
                 
                 if (temp) {
@@ -131,12 +131,12 @@ void Stack<StackBlockData>::operator =(const Stack<StackBlockData> &Stack0) {
                 }
                 
                 else
-                    error_code |= MEM_ERR;
+                    state |= MEM_ERR;
             }
         }
         
         else
-            error_code |= MEM_ERR;
+            state |= MEM_ERR;
     }
 }
 
@@ -145,7 +145,7 @@ template <typename StackBlockData>
 void Stack<StackBlockData>::push(StackBlockData data) {
     StackBlock<StackBlockData> *temp;
     
-    if (!(error_code & MEM_ERR)) {
+    if (!(state & MEM_ERR)) {
         if (k % StackBlockSize != 0) {
             top->data[k % StackBlockSize] = data;
             k++;
@@ -171,7 +171,7 @@ void Stack<StackBlockData>::push(StackBlockData data) {
             }
             
             else
-                error_code |= MEM_ERR;
+                state |= MEM_ERR;
         }
     }
 }
@@ -200,7 +200,7 @@ StackBlockData Stack<StackBlockData>::pop() {
     }
     
     else
-        error_code |= EMPTY;
+        state |= EMPTY;
     
     return data;
 }
@@ -212,7 +212,7 @@ void Stack<StackBlockData>::change(StackBlockData data) {
         top->data[(k - 1) % StackBlockSize] = data;
     
     else
-        error_code |= EMPTY;
+        state |= EMPTY;
 }
 
 
@@ -224,7 +224,7 @@ StackBlockData Stack<StackBlockData>::peek() {
         data = top->data[(k - 1) % StackBlockSize];
     
     else
-        error_code |= EMPTY;
+        state |= EMPTY;
     
     return data;
 }
@@ -250,7 +250,7 @@ void Stack<StackBlockData>::del() {
     }
     
     else
-        error_code |= EMPTY;
+        state |= EMPTY;
 }
 
 
@@ -285,12 +285,12 @@ bool Stack<StackBlockData>::isEmpty() {
 
 
 template <typename StackBlockData>
-uint8_t Stack<StackBlockData>::error() {
-    uint8_t error_code_r = error_code;
+uint8_t Stack<StackBlockData>::getState() {
+    uint8_t state_r = state;
     
-    error_code &= MEM_ERR;
+    state &= MEM_ERR;
     
-    return error_code_r;
+    return state_r;
 }
 
 

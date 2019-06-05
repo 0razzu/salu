@@ -18,7 +18,7 @@ template <typename DictionaryData>
 class Dictionary {
 private:
     DictionaryBlock<DictionaryData> *first_block, *last_block;
-    uint8_t error_code;
+    uint8_t state;
     
 public:
     Dictionary();
@@ -29,7 +29,7 @@ public:
     void del(const char[DictionaryKeySize]);
     
     bool isEmpty();
-    uint8_t error();
+    uint8_t getState();
 };
 
 
