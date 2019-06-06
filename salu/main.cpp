@@ -111,7 +111,7 @@ int main(int argc, const char *argv[]) {
         else {
             if (argc == 1) {
                 while (file_path[0] == '\0') {
-                    std::cout << "Введите путь к файлу с кодом для САЛУ" << std::endl;
+                    std::cout << std::endl << "Введите путь к файлу с кодом для САЛУ" << std::endl;
                     rewind(stdin);
                     std::cin.getline(file_path, 1024, '\n');
                 }

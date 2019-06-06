@@ -676,5 +676,8 @@ uint8_t salu(FilterStream &code, bool &res_is_real, double &Rres, bool &Bres) {
     if ((state == OK) && ((!r_operands.isEmpty()) || (!b_operands.isEmpty()) || (!is_real.isEmpty())))
         state |= OPERANDS;
     
+    else if (state & (INCOMPATIBLE | OPERANDS))
+        state &= ~OPERANDS;
+    
     return state;
 }
