@@ -96,7 +96,7 @@ uint8_t fillDictionaries(Dictionary<double> &r_vars, Dictionary<bool> &b_vars) {
                         else
                             state |= UNEXPECTED;
                     }
-                        
+                    
                     else if ((type == 'B') && (space == ' ')) {
                         space = vars.get();
                         TF = vars.peek();
@@ -125,7 +125,7 @@ uint8_t fillDictionaries(Dictionary<double> &r_vars, Dictionary<bool> &b_vars) {
         }
     }
     
-    return state;
+    return (state & ~END);
 }
 
 
@@ -136,8 +136,8 @@ uint8_t salu(FilterStream &code, char &wrong_symbol) {
     Dictionary<double> r_vars;
     Dictionary<bool> b_vars;
     char c = '\0', next, command[4], name[16];
-    bool read_ok, TF;
-    double num;
+    bool read_ok, TF, Ba, Bb, a_is_real, b_is_real;
+    double num, Ra, Rb;
     
     state |= fillDictionaries(r_vars, b_vars);
     
@@ -237,6 +237,34 @@ uint8_t salu(FilterStream &code, char &wrong_symbol) {
                         else
                             state |= READ_ERR;
                     }
+                    
+                    else if (strcmp("POW", command) == 0) {
+                        if (is_real.getK() >= 2) {
+                            b_is_real = is_real.pop();
+                            a_is_real = is_real.pop();
+                            state |= is_real.getState() & MEM_ERR;
+                            
+                            if ((state == WORKING) && ((!a_is_real) || (!b_is_real)))
+                                state |= INCOMPATIBLE;
+                        }
+                        
+                        else
+                            state |= NE_OPERANDS;
+                        
+                        Rb = r_operands.pop();
+                        Ra = r_operands.pop();
+                        state |= r_operands.getState() & (MEM_ERR | EMPTY);
+                        
+                        if (state == WORKING) {
+                            Ra = pow(Ra, Rb);
+                            r_operands.push(Ra);
+                            is_real.push(1);
+                            state |= (r_operands.getState() | is_real.getState()) & MEM_ERR;
+                        }
+                    }
+                    
+                    else
+                        state |= UNEXPECTED;
                 }
                 
                 else
@@ -247,6 +275,9 @@ uint8_t salu(FilterStream &code, char &wrong_symbol) {
                 c = code.get();
                 state &= ~WORKING;
             }
+            
+            else
+                state |= UNEXPECTED;
             
             next = code.peek();
             state |= code.getState() & (MEM_ERR | READ_ERR);
