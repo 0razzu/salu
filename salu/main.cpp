@@ -282,6 +282,21 @@ uint8_t salu(FilterStream &code, bool &res_is_real, double &Rres, bool &Bres) {
                         }
                     }
                     
+                    else if (strcmp("RES", command) == 0) {
+                        res_is_real = is_real.pop();
+                        state |= is_real.getState() & (MEM_ERR | EMPTY);
+                        
+                        if (state == WORKING) {
+                            if (res_is_real)
+                                Rres = r_operands.pop();
+                            
+                            else
+                                Bres = b_operands.pop();
+                            
+                            state |= (r_operands.getState() | b_operands.getState()) & (MEM_ERR | EMPTY);
+                        }
+                    }
+                    
                     else
                         state |= UNEXPECTED;
                 }
