@@ -11,6 +11,7 @@
 		333FAAE122A4526C0057E1A1 /* stack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 333FAADD22A4526C0057E1A1 /* stack.cpp */; };
 		333FAAE222A4526C0057E1A1 /* dictionary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 333FAADE22A4526C0057E1A1 /* dictionary.cpp */; };
 		333FAAFC22A6EA590057E1A1 /* filter_stream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 333FAAFB22A6EA590057E1A1 /* filter_stream.cpp */; };
+		333FAB0522A9AA2D0057E1A1 /* salu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 333FAB0322A9AA2D0057E1A1 /* salu.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -35,6 +36,8 @@
 		333FAAE022A4526C0057E1A1 /* globals.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = globals.hpp; sourceTree = "<group>"; };
 		333FAAFA22A6EA590057E1A1 /* filter_stream.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = filter_stream.hpp; sourceTree = "<group>"; };
 		333FAAFB22A6EA590057E1A1 /* filter_stream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = filter_stream.cpp; sourceTree = "<group>"; };
+		333FAB0322A9AA2D0057E1A1 /* salu.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = salu.cpp; sourceTree = "<group>"; };
+		333FAB0422A9AA2D0057E1A1 /* salu.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = salu.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +78,8 @@
 				333FAADE22A4526C0057E1A1 /* dictionary.cpp */,
 				333FAAFA22A6EA590057E1A1 /* filter_stream.hpp */,
 				333FAAFB22A6EA590057E1A1 /* filter_stream.cpp */,
+				333FAB0422A9AA2D0057E1A1 /* salu.hpp */,
+				333FAB0322A9AA2D0057E1A1 /* salu.cpp */,
 			);
 			path = salu;
 			sourceTree = "<group>";
@@ -138,6 +143,7 @@
 				333FAAE122A4526C0057E1A1 /* stack.cpp in Sources */,
 				333FAAE222A4526C0057E1A1 /* dictionary.cpp in Sources */,
 				333C30BC22A44E9F00B7C35B /* main.cpp in Sources */,
+				333FAB0522A9AA2D0057E1A1 /* salu.cpp in Sources */,
 				333FAAFC22A6EA590057E1A1 /* filter_stream.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
