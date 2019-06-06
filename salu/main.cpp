@@ -311,6 +311,26 @@ uint8_t salu(FilterStream &code, bool &res_is_real, double &Rres, bool &Bres) {
                         }
                     }
                     
+                    else if (strcmp("MUL", command) == 0) {
+                        b_is_real = is_real.pop();
+                        a_is_real = is_real.pop();
+                        state |= is_real.getState() & (MEM_ERR | EMPTY);
+                        
+                        if ((state == WORKING) && ((!a_is_real) || (!b_is_real)))
+                            state |= INCOMPATIBLE;
+                        
+                        Rb = r_operands.pop();
+                        Ra = r_operands.pop();
+                        state |= r_operands.getState() & (MEM_ERR | EMPTY);
+                        
+                        if (state == WORKING) {
+                            Ra *= Rb;
+                            r_operands.push(Ra);
+                            is_real.push(1);
+                            state |= (r_operands.getState() | is_real.getState()) & MEM_ERR;
+                        }
+                    }
+                    
                     else if (strcmp("RES", command) == 0) {
                         res_is_real = is_real.pop();
                         state |= is_real.getState() & (MEM_ERR | EMPTY);
