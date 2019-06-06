@@ -8,7 +8,7 @@
 
 
 bool read_num(FilterStream &in, double &num) {
-    bool ok = 0, frac = 0, first_dot = 1;
+    bool ok = 0, negative = 0, frac = 0, first_dot = 1;
     short frac_digits = 0;
     char c = '\0', next = '0';
     unsigned frac_part = 0;
@@ -18,8 +18,17 @@ bool read_num(FilterStream &in, double &num) {
     next = in.peek();
     ok = in.isOK();
     
-    if (!(((next >= '0') && (next <= '9')) || (next == '.') || (next == ',')))
+    if (!(((next >= '0') && (next <= '9')) || (next == '.') || (next == ',') || (next == '+') || (next == '-')))
         ok = 0;
+    
+    else if ((next == '+') || (next == '-')) {
+        c = in.get();
+        next = in.peek();
+        ok = in.isOK();
+        
+        if (c == '-')
+            negative = 1;
+    }
     
     while ((ok) && (((next >= '0') && (next <= '9')) || (next == '.') || (next == ','))) {
         c = in.get();
@@ -50,8 +59,12 @@ bool read_num(FilterStream &in, double &num) {
     if ((frac) && (num == 0) && (frac_digits == 0))
         ok = 0;
     
-    if (ok)
+    if (ok) {
         num += frac_part * pow(10, -frac_digits);
+        
+        if (negative)
+            num = -num;
+    }
     
     return ok;
 }
@@ -345,6 +358,280 @@ uint8_t salu(FilterStream &code, bool &res_is_real, double &Rres, bool &Bres) {
                         
                         if (state == WORKING) {
                             Ra /= Rb;
+                            r_operands.push(Ra);
+                            is_real.push(1);
+                            state |= (r_operands.getState() | is_real.getState()) & MEM_ERR;
+                        }
+                    }
+                    
+                    else if (strcmp("AND", command) == 0) {
+                        b_is_real = is_real.pop();
+                        a_is_real = is_real.pop();
+                        state |= is_real.getState() & (MEM_ERR | EMPTY);
+                        
+                        if ((state == WORKING) && ((a_is_real) || (b_is_real)))
+                            state |= INCOMPATIBLE;
+                        
+                        Bb = b_operands.pop();
+                        Ba = b_operands.pop();
+                        state |= b_operands.getState() & (MEM_ERR | EMPTY);
+                        
+                        if (state == WORKING) {
+                            Ba = Ba && Bb;
+                            b_operands.push(Ba);
+                            is_real.push(0);
+                            state |= (b_operands.getState() | is_real.getState()) & MEM_ERR;
+                        }
+                    }
+                    
+                    else if (strcmp("SUM", command) == 0) {
+                        b_is_real = is_real.pop();
+                        a_is_real = is_real.pop();
+                        state |= is_real.getState() & (MEM_ERR | EMPTY);
+                        
+                        if ((state == WORKING) && ((!a_is_real) || (!b_is_real)))
+                            state |= INCOMPATIBLE;
+                        
+                        Rb = r_operands.pop();
+                        Ra = r_operands.pop();
+                        state |= r_operands.getState() & (MEM_ERR | EMPTY);
+                        
+                        if (state == WORKING) {
+                            Ra += Rb;
+                            r_operands.push(Ra);
+                            is_real.push(1);
+                            state |= (r_operands.getState() | is_real.getState()) & MEM_ERR;
+                        }
+                    }
+                    
+                    else if (strcmp("SUB", command) == 0) {
+                        b_is_real = is_real.pop();
+                        a_is_real = is_real.pop();
+                        state |= is_real.getState() & (MEM_ERR | EMPTY);
+                        
+                        if ((state == WORKING) && ((!a_is_real) || (!b_is_real)))
+                            state |= INCOMPATIBLE;
+                        
+                        Rb = r_operands.pop();
+                        Ra = r_operands.pop();
+                        state |= r_operands.getState() & (MEM_ERR | EMPTY);
+                        
+                        if (state == WORKING) {
+                            Ra -= Rb;
+                            r_operands.push(Ra);
+                            is_real.push(1);
+                            state |= (r_operands.getState() | is_real.getState()) & MEM_ERR;
+                        }
+                    }
+                    
+                    else if (strcmp("LES", command) == 0) {
+                        b_is_real = is_real.pop();
+                        a_is_real = is_real.pop();
+                        state |= is_real.getState() & (MEM_ERR | EMPTY);
+                        
+                        if (state == WORKING) {
+                            if ((a_is_real) && (b_is_real)) {
+                                Rb = r_operands.pop();
+                                Ra = r_operands.pop();
+                                state |= r_operands.getState() & (MEM_ERR | EMPTY);
+                                
+                                if (state == WORKING) {
+                                    Ba = Ra < Rb;
+                                    b_operands.push(Ba);
+                                    is_real.push(0);
+                                    state |= (b_operands.getState() | is_real.getState()) & MEM_ERR;
+                                }
+                            }
+                            
+                            else if ((!a_is_real) && (!b_is_real)) {
+                                Bb = b_operands.pop();
+                                Ba = b_operands.pop();
+                                state |= b_operands.getState() & (MEM_ERR | EMPTY);
+                                
+                                if (state == WORKING) {
+                                    Ba = Ba < Bb;
+                                    b_operands.push(Ba);
+                                    is_real.push(0);
+                                    state |= (b_operands.getState() | is_real.getState()) & MEM_ERR;
+                                }
+                            }
+                            
+                            else
+                                state |= INCOMPATIBLE;
+                        }
+                    }
+                    
+                    else if (strcmp("MOR", command) == 0) {
+                        b_is_real = is_real.pop();
+                        a_is_real = is_real.pop();
+                        state |= is_real.getState() & (MEM_ERR | EMPTY);
+                        
+                        if (state == WORKING) {
+                            if ((a_is_real) && (b_is_real)) {
+                                Rb = r_operands.pop();
+                                Ra = r_operands.pop();
+                                state |= r_operands.getState() & (MEM_ERR | EMPTY);
+                                
+                                if (state == WORKING) {
+                                    Ba = Ra > Rb;
+                                    b_operands.push(Ba);
+                                    is_real.push(0);
+                                    state |= (b_operands.getState() | is_real.getState()) & MEM_ERR;
+                                }
+                            }
+                            
+                            else if ((!a_is_real) && (!b_is_real)) {
+                                Bb = b_operands.pop();
+                                Ba = b_operands.pop();
+                                state |= b_operands.getState() & (MEM_ERR | EMPTY);
+                                
+                                if (state == WORKING) {
+                                    Ba = Ba > Bb;
+                                    b_operands.push(Ba);
+                                    is_real.push(0);
+                                    state |= (b_operands.getState() | is_real.getState()) & MEM_ERR;
+                                }
+                            }
+                            
+                            else
+                                state |= INCOMPATIBLE;
+                        }
+                    }
+                    
+                    else if (strcmp("EQL", command) == 0) {
+                        b_is_real = is_real.pop();
+                        a_is_real = is_real.pop();
+                        state |= is_real.getState() & (MEM_ERR | EMPTY);
+                        
+                        if (state == WORKING) {
+                            if ((a_is_real) && (b_is_real)) {
+                                Rb = r_operands.pop();
+                                Ra = r_operands.pop();
+                                state |= r_operands.getState() & (MEM_ERR | EMPTY);
+                                
+                                if (state == WORKING) {
+                                    Ba = Ra == Rb;
+                                    b_operands.push(Ba);
+                                    is_real.push(0);
+                                    state |= (b_operands.getState() | is_real.getState()) & MEM_ERR;
+                                }
+                            }
+                            
+                            else if ((!a_is_real) && (!b_is_real)) {
+                                Bb = b_operands.pop();
+                                Ba = b_operands.pop();
+                                state |= b_operands.getState() & (MEM_ERR | EMPTY);
+                                
+                                if (state == WORKING) {
+                                    Ba = Ba == Bb;
+                                    b_operands.push(Ba);
+                                    is_real.push(0);
+                                    state |= (b_operands.getState() | is_real.getState()) & MEM_ERR;
+                                }
+                            }
+                            
+                            else
+                                state |= INCOMPATIBLE;
+                        }
+                    }
+                    
+                    else if (strcmp("NEQ", command) == 0) {
+                        b_is_real = is_real.pop();
+                        a_is_real = is_real.pop();
+                        state |= is_real.getState() & (MEM_ERR | EMPTY);
+                        
+                        if (state == WORKING) {
+                            if ((a_is_real) && (b_is_real)) {
+                                Rb = r_operands.pop();
+                                Ra = r_operands.pop();
+                                state |= r_operands.getState() & (MEM_ERR | EMPTY);
+                                
+                                if (state == WORKING) {
+                                    Ba = Ra != Rb;
+                                    b_operands.push(Ba);
+                                    is_real.push(0);
+                                    state |= (b_operands.getState() | is_real.getState()) & MEM_ERR;
+                                }
+                            }
+                            
+                            else if ((!a_is_real) && (!b_is_real)) {
+                                Bb = b_operands.pop();
+                                Ba = b_operands.pop();
+                                state |= b_operands.getState() & (MEM_ERR | EMPTY);
+                                
+                                if (state == WORKING) {
+                                    Ba = Ba != Bb;
+                                    b_operands.push(Ba);
+                                    is_real.push(0);
+                                    state |= (b_operands.getState() | is_real.getState()) & MEM_ERR;
+                                }
+                            }
+                            
+                            else
+                                state |= INCOMPATIBLE;
+                        }
+                    }
+                    
+                    else if (strcmp("OR_", command) == 0) {
+                        b_is_real = is_real.pop();
+                        a_is_real = is_real.pop();
+                        state |= is_real.getState() & (MEM_ERR | EMPTY);
+                        
+                        if ((state == WORKING) && ((a_is_real) || (b_is_real)))
+                            state |= INCOMPATIBLE;
+                        
+                        Bb = b_operands.pop();
+                        Ba = b_operands.pop();
+                        state |= b_operands.getState() & (MEM_ERR | EMPTY);
+                        
+                        if (state == WORKING) {
+                            Ba = Ba || Bb;
+                            b_operands.push(Ba);
+                            is_real.push(0);
+                            state |= (b_operands.getState() | is_real.getState()) & MEM_ERR;
+                        }
+                    }
+                    
+                    else if (strcmp("FRC", command) == 0) {
+                        a_is_real = is_real.pop();
+                        state |= is_real.getState() & (MEM_ERR | EMPTY);
+                        
+                        if ((state == WORKING) && (!a_is_real))
+                            state |= INCOMPATIBLE;
+                        
+                        Ra = r_operands.pop();
+                        state |= r_operands.getState() & (MEM_ERR | EMPTY);
+                        
+                        if (state == WORKING) {
+                            if (Ra < 0)
+                                Ra -= (int)Ra - 1;
+                            
+                            else
+                                Ra -= (int)Ra;
+                            
+                            r_operands.push(Ra);
+                            is_real.push(1);
+                            state |= (r_operands.getState() | is_real.getState()) & MEM_ERR;
+                        }
+                    }
+                    
+                    else if (strcmp("ENT", command) == 0) {
+                        a_is_real = is_real.pop();
+                        state |= is_real.getState() & (MEM_ERR | EMPTY);
+                        
+                        if ((state == WORKING) && (!a_is_real))
+                            state |= INCOMPATIBLE;
+                        
+                        Ra = r_operands.pop();
+                        state |= r_operands.getState() & (MEM_ERR | EMPTY);
+                        
+                        if (state == WORKING) {
+                            if (Ra < 0)
+                                Ra = (int)Ra - 1;
+                            
+                            else
+                                Ra = (int)Ra;
+                            
                             r_operands.push(Ra);
                             is_real.push(1);
                             state |= (r_operands.getState() | is_real.getState()) & MEM_ERR;
