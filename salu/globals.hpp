@@ -24,7 +24,7 @@ const ushort PIECE_SIZE = 25;
 const uint8_t READ_ERR = 0x8, NO_FILE = 0x20;
 
 // salu
-const uint8_t INCOMPATIBLE = 0x10, NE_OPERANDS = 0x40, WORKING = 0x80;
+const uint8_t INCOMPATIBLE = 0x10, OPERANDS = 0x40, WORKING = 0x80;
 
 // salu & fill_dictionaries
 const uint8_t UNEXPECTED = 0x4;

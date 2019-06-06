@@ -118,6 +118,12 @@ uint8_t fillDictionaries(Dictionary<double> &r_vars, Dictionary<bool> &b_vars) {
                             state |= UNEXPECTED;
                     }
                 }
+                
+                space = vars.peek();
+                if (space == ' ') {
+                    space = vars.get();
+                    state |= vars.getState() & (MEM_ERR | READ_ERR);
+                }
             }
             
             else
@@ -129,7 +135,7 @@ uint8_t fillDictionaries(Dictionary<double> &r_vars, Dictionary<bool> &b_vars) {
 }
 
 
-uint8_t salu(FilterStream &code, char &wrong_symbol) {
+uint8_t salu(FilterStream &code, bool &res_is_real, double &Rres, bool &Bres) {
     uint8_t state = OK;
     Stack<double> r_operands;
     Stack<bool> b_operands, is_real;
@@ -239,17 +245,12 @@ uint8_t salu(FilterStream &code, char &wrong_symbol) {
                     }
                     
                     else if (strcmp("POW", command) == 0) {
-                        if (is_real.getK() >= 2) {
-                            b_is_real = is_real.pop();
-                            a_is_real = is_real.pop();
-                            state |= is_real.getState() & MEM_ERR;
-                            
-                            if ((state == WORKING) && ((!a_is_real) || (!b_is_real)))
-                                state |= INCOMPATIBLE;
-                        }
+                        b_is_real = is_real.pop();
+                        a_is_real = is_real.pop();
+                        state |= is_real.getState() & (MEM_ERR | EMPTY);
                         
-                        else
-                            state |= NE_OPERANDS;
+                        if ((state == WORKING) && ((!a_is_real) || (!b_is_real)))
+                            state |= INCOMPATIBLE;
                         
                         Rb = r_operands.pop();
                         Ra = r_operands.pop();
@@ -260,6 +261,24 @@ uint8_t salu(FilterStream &code, char &wrong_symbol) {
                             r_operands.push(Ra);
                             is_real.push(1);
                             state |= (r_operands.getState() | is_real.getState()) & MEM_ERR;
+                        }
+                    }
+                    
+                    else if (strcmp("NOT", command) == 0) {
+                        a_is_real = is_real.pop();
+                        state |= is_real.getState() & (MEM_ERR | EMPTY);
+                        
+                        if ((state == WORKING) && (a_is_real))
+                            state |= INCOMPATIBLE;
+                        
+                        Ba = b_operands.pop();
+                        state |= b_operands.getState() & (MEM_ERR | EMPTY);
+                        
+                        if (state == WORKING) {
+                            Ba = !Ba;
+                            b_operands.push(Ba);
+                            is_real.push(0);
+                            state |= (b_operands.getState() | is_real.getState()) & MEM_ERR;
                         }
                     }
                     
@@ -279,18 +298,29 @@ uint8_t salu(FilterStream &code, char &wrong_symbol) {
             else
                 state |= UNEXPECTED;
             
-            next = code.peek();
-            state |= code.getState() & (MEM_ERR | READ_ERR);
+            if (state == WORKING) {
+                next = code.peek();
+                state |= code.getState() & (MEM_ERR | READ_ERR);
+            }
         }
     }
+    
+    if ((state & ~WORKING) != OK)
+        state &= ~WORKING;
+    
+    if ((state == OK) && ((!r_operands.isEmpty()) || (!b_operands.isEmpty()) || (!is_real.isEmpty())))
+        state |= OPERANDS;
     
     return state;
 }
 
 
-int main(int argc, const char * argv[]) {
+int main(int argc, const char *argv[]) {
     FilterStream code;
-    char file_path[1024] = "", wrong_symbol = '\0';
+    char file_path[1024] = "";
+    uint8_t salu_res;
+    bool res_is_real, Bres;
+    double Rres;
     
     if (argc > 2)
         std::cerr << "Некорректное число входных аргументов" << std::endl;
@@ -309,8 +339,47 @@ int main(int argc, const char * argv[]) {
         
         code.open(file_path);
         
-        if (code.isOK())
-            salu(code, wrong_symbol);
+        if (code.isOK()) {
+            salu_res = salu(code, res_is_real, Rres, Bres);
+            
+            if (salu_res == OK) {
+                std::cout << "Результат: ";
+                
+                if (res_is_real)
+                    std::cout << Rres;
+                
+                else
+                    std::cout << std::boolalpha << Bres;
+                
+                std::cout << std::endl;
+            }
+            
+            else {
+                if (salu_res & WORKING)
+                    std::cerr << "Не найден оператор завершения программы" << std::endl;
+                
+                if (salu_res & OPERANDS)
+                    std::cerr << "Несоответствие между количествами функций, операторов и операндов" << std::endl;
+                
+                if (salu_res & NO_FILE)
+                    std::cerr << "Ошибка при открытии файла с переменными" << std::endl;
+                
+                if (salu_res & INCOMPATIBLE)
+                    std::cerr << "Несовместимость оператора и операндов" << std::endl;
+                
+                if (salu_res & READ_ERR)
+                    std::cerr << "Ошибка при чтении из файла" << std::endl;
+                
+                if (salu_res & UNEXPECTED)
+                    std::cerr << "Неожиданный символ" << std::endl;
+                
+                if (salu_res & REDEFINITION)
+                    std::cerr << "Попытка переопределения переменной" << std::endl;
+                
+                if (salu_res & MEM_ERR)
+                    std::cerr << "Ошибка памяти" << std::endl;
+            }
+        }
         
         else
             std::cerr << "Ошибка при открытии файла «" << file_path << "»" << std::endl;
