@@ -10,28 +10,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "salu/main.cpp"
-            timestampString = "581534827.536328"
+            timestampString = "581540478.323774"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "152"
-            endingLineNumber = "152"
-            landmarkName = "salu(FilterStream &amp;code, bool &amp;res_is_real, double &amp;Rres, bool &amp;Bres)"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "salu/main.cpp"
-            timestampString = "581534827.536813"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "175"
-            endingLineNumber = "175"
-            landmarkName = "salu(FilterStream &amp;code, bool &amp;res_is_real, double &amp;Rres, bool &amp;Bres)"
+            startingLineNumber = "789"
+            endingLineNumber = "789"
+            landmarkName = "main(int argc, const char *argv[])"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
