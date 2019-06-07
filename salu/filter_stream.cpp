@@ -98,7 +98,10 @@ char FilterStream::get() {
     if (place >= PIECE_SIZE - 1)
         get_piece();
     
-    if (isOK()) {
+    if (isRead())
+        state |= READ_ERR;
+    
+    else if (isOK()) {
         c = piece[place];
         place++;
     }
